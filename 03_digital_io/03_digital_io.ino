@@ -1,4 +1,4 @@
-#define LED D0
+#define LED 16
 void setup() {
   // put your setup code here, to run once:
   pinMode(LED, OUTPUT);
