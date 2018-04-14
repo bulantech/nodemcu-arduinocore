@@ -11,6 +11,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if(digitalRead(SW)) digitalWrite(LED, LED_ON);  
+  int switchPut;
+  switchPut = !digitalRead(SW);
+  if(switchPut) digitalWrite(LED, LED_ON);  
   else digitalWrite(LED, LED_OFF); 
 }
