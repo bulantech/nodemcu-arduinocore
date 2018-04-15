@@ -1,24 +1,20 @@
-
 #define LED D0  
-#define BUZZER D8                        
-int count;
+#define BUZZER D8  
+#define analogPin A0                      
+
 void setup()
 {
-  Serial.begin(115200);              //  setup serial
+  Serial.begin(115200);
   pinMode(LED, OUTPUT);
   pinMode(BUZZER, OUTPUT);
 }
 
 void loop()
 {
-  analogWriteFreq(50);
-  analogWrite(LED,500);
-  if(count < 5) analogWrite(BUZZER,500);
-  else analogWrite(BUZZER,0);     
+  int val = analogRead(analogPin);
+  Serial.println(val);
+  if(val == 1024) val = 1023;
+  analogWrite(LED, 1023 - val);
+  analogWrite(BUZZER, val);       
   delay(1000);
-  analogWrite(LED,1000); 
-  if(count < 5) analogWrite(BUZZER,1000);
-  else analogWrite(BUZZER,0);   
-  delay(1000);
-  count++;
 }
