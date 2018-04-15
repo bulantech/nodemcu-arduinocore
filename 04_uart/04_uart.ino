@@ -1,4 +1,4 @@
-
+int count;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -6,9 +6,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.print("Serial.print"); 
-  Serial.print("Serial.print");
-  Serial.println("Serial.println"); 
-  Serial.println("Serial.println");
+  count++;
+  Serial.println(count, DEC);
   delay(2000);
 }
