@@ -7,5 +7,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   Serial.print("Serial.print"); 
-  delay(3000);
+  Serial.print("Serial.print");
+  Serial.println("Serial.println"); 
+  Serial.println("Serial.println");
+  delay(2000);
 }
