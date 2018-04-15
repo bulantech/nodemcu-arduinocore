@@ -11,6 +11,7 @@ void setup()
 
 void loop()
 {
+  analogWriteFreq(50);
   analogWrite(LED,500);
   if(count < 5) analogWrite(BUZZER,500);
   else analogWrite(BUZZER,0);     
