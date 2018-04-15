@@ -1,4 +1,4 @@
-int count;
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -7,13 +7,13 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  char incomingByte;
-  int incomingInt;
-  if (Serial.available() > 0) {
-    incomingByte = Serial.read();
-    incomingInt = incomingByte;
-    Serial.print("get > ");
-    Serial.println(incomingByte);
-    Serial.println(incomingInt);
+  String text;
+  while(Serial.available()) {
+    text += (char)Serial.read();
   }
+  if(text.length())
+    Serial.println(text); 
+  delay(1000);
 }
+
+
