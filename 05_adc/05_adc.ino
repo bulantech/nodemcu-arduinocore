@@ -1,5 +1,4 @@
 int analogPin = A0;                           
-int val = 0;          
 
 void setup()
 {
@@ -8,7 +7,8 @@ void setup()
 
 void loop()
 {
-  val = analogRead(analogPin);     // read the input pin
-  Serial.printf("adc = %u \r\n",val);   
+  int val = analogRead(analogPin);     // read the input pin
+  float vin = 3.3*(float)val / 1024;
+  Serial.printf("adc = %u, vin =  %.2f \r\n", val, vin);   
   delay(2000);
 }
