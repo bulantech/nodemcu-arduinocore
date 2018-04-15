@@ -1,0 +1,14 @@
+int analogPin = A0;                           
+int val = 0;          
+
+void setup()
+{
+  Serial.begin(115200);              //  setup serial
+}
+
+void loop()
+{
+  val = analogRead(analogPin);     // read the input pin
+  Serial.println(val);             // debug value
+  delay(2000);
+}
