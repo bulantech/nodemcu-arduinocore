@@ -1,4 +1,4 @@
-// change size
+// multi lines
 
 #include <SPI.h> 
 #include <Wire.h> 
@@ -13,14 +13,17 @@ void setup() {
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);   
   display.clearDisplay();   
   display.display();  
-  display.setTextSize(2);   
+  display.setTextSize(1);   
   display.setTextColor(WHITE,BLACK); 
 } 
 
 void loop() {   
   display.setCursor(0,0);   
   display.println("Hello line1");   
-  display.println("line 2");   
+  display.println("line 2"); 
+  display.println("line 3"); 
+  display.println("line 4"); 
+  display.println("line 5");   
   display.display(); 
   delay(2000);
 }
