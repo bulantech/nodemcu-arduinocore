@@ -1,4 +1,4 @@
-// multi lines
+// out of line
 
 #include <SPI.h> 
 #include <Wire.h> 
@@ -19,7 +19,7 @@ void setup() {
 
 void loop() {   
   display.setCursor(0,0);   
-  display.println("Hello line1");   
+  display.println("Hello line1 123456789abcdefg");   
   display.println("line 2"); 
   display.println("line 3"); 
   display.println("line 4"); 
