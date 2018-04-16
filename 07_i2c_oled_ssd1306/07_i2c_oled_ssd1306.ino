@@ -17,13 +17,11 @@ void setup() {
   display.setTextColor(WHITE,BLACK); 
 } 
 
+int count;
 void loop() {   
   display.setCursor(0,0);   
-  display.println("Hello line1 123456789abcdefg");   
-  display.println("line 2"); 
-  display.println("line 3"); 
-  display.println("line 4"); 
-  display.println("line 5");   
+  display.printf("Hello count = %u \r\n", count++);   
+  display.println("line 2");  
   display.display(); 
   delay(2000);
 }
