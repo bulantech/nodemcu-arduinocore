@@ -1,3 +1,5 @@
+// change size
+
 #include <SPI.h> 
 #include <Wire.h> 
 #include <Adafruit_GFX.h> 
@@ -11,7 +13,7 @@ void setup() {
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);   
   display.clearDisplay();   
   display.display();  
-  display.setTextSize(1);   
+  display.setTextSize(2);   
   display.setTextColor(WHITE,BLACK); 
 } 
 
