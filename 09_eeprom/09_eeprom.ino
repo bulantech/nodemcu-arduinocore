@@ -22,7 +22,7 @@ void setup() {
 
   // Step 2
   StaticJsonBuffer<200> jsonBuffer;
-
+  
   // Step 3
   JsonObject& root = jsonBuffer.createObject();
   root["sensor"] = "gps";
