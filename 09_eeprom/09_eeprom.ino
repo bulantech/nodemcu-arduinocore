@@ -1,45 +1,42 @@
-#include <EEPROM.h>
+// Deserialization 
 
-// start reading from the first byte (address 0) of the EEPROM
-int address = 0;
-byte value;
+// Step 1
+#include <ArduinoJson.h>
 
 void setup() {
-  // initialize serial and wait for port to open:
-  Serial.begin(115200);  
-  EEPROM.begin(512);
-}
+  Serial.begin(9600);
+  while (!Serial) continue;
 
-void eepromStringWrite(String str) {
-  for(int i=0; i<str.length(); i++) {
-    EEPROM.write(i, str[i]);
+  // Step 2
+  char json[] =
+      "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+
+  // Step 3
+  StaticJsonBuffer<200> jsonBuffer;
+
+  // Step 4
+  JsonObject& root = jsonBuffer.parseObject(json);
+
+  // Step 5
+  if (!root.success()) {
+    Serial.println("parseObject() failed");
+    return;
   }
-  EEPROM.write(str.length(), 0);
-  EEPROM.commit();
-}
 
-String eepromStringRead() {
-  String str = "";
-  int i=0;
-  while(1) {
-    char c = EEPROM.read(i++);    
-    str.concat(c);;
-    if(c == 0) return str;
-  } 
-}
-
-void loop() {
-  String stringData = "Hello "+(String)address;
-  Serial.println(stringData);
-  eepromStringWrite(stringData);
-
-  address++;
-  
-  String text = eepromStringRead();
-  Serial.println(text);
+  // Step 6
+  const char* sensor = root["sensor"];
+  long time = root["time"];
+  double latitude = root["data"][0];
+  double longitude = root["data"][1];
   Serial.println();
-  
-  delay(3000);
+  Serial.print("sensor: ");
+  Serial.println(sensor);
+  Serial.print("time: ");
+  Serial.println(time);
+  Serial.print("latitude: ");
+  Serial.println(latitude, 6);
+  Serial.print("longitude: ");
+  Serial.println(longitude, 6);
 }
 
-
+void loop() {}
