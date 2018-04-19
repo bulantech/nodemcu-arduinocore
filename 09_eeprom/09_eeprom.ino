@@ -10,24 +10,36 @@ void setup() {
   EEPROM.begin(512);
 }
 
-void loop() {
-  // read a byte from the current address of the EEPROM
-  EEPROM.write(address, address+1);
-  value = EEPROM.read(address);
+void eepromStringWrite(String str) {
+  for(int i=0; i<str.length(); i++) {
+    EEPROM.write(i, str[i]);
+  }
+  EEPROM.write(str.length(), 0);
+  EEPROM.commit();
+}
 
-  Serial.print("address=");
-  Serial.print(address);
-  Serial.print(", data=");
-  Serial.print(value, DEC);
-  Serial.println();
+String eepromStringRead() {
+  String str = "";
+  int i=0;
+  while(1) {
+    char c = EEPROM.read(i++);    
+    str.concat(c);;
+    if(c == 0) return str;
+  } 
+}
+
+void loop() {
+  String stringData = "Hello "+(String)address;
+  Serial.println(stringData);
+  eepromStringWrite(stringData);
 
   address++;
-
-  if (address == 512) {
-    address = 0;
-  }
   
-  delay(1000);
+  String text = eepromStringRead();
+  Serial.println(text);
+  Serial.println();
+  
+  delay(3000);
 }
 
 
