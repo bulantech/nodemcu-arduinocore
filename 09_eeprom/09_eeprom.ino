@@ -1,4 +1,17 @@
-// Deserialization 
+// Serialization
+
+//  {
+//    "sensor":"gps",
+//    "time":1351824120,
+//    "data":[
+//      48.756080,
+//      2.302038
+//    ], 
+//    "object":{
+//      "a":1,
+//      "b":2
+//    }
+//  }
 
 // Step 1
 #include <ArduinoJson.h>
@@ -8,35 +21,24 @@ void setup() {
   while (!Serial) continue;
 
   // Step 2
-  char json[] =
-      "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
-
-  // Step 3
   StaticJsonBuffer<200> jsonBuffer;
 
+  // Step 3
+  JsonObject& root = jsonBuffer.createObject();
+  root["sensor"] = "gps";
+  root["time"] = 1351824120;
+  JsonArray& data = root.createNestedArray("data");
+  data.add(48.756080);
+  data.add(2.302038);
+  JsonObject& object = root.createNestedObject("object");
+  object["a"] = 1;
+  object["b"] = 2;
+
   // Step 4
-  JsonObject& root = jsonBuffer.parseObject(json);
-
-  // Step 5
-  if (!root.success()) {
-    Serial.println("parseObject() failed");
-    return;
-  }
-
-  // Step 6
-  const char* sensor = root["sensor"];
-  long time = root["time"];
-  double latitude = root["data"][0];
-  double longitude = root["data"][1];
   Serial.println();
-  Serial.print("sensor: ");
-  Serial.println(sensor);
-  Serial.print("time: ");
-  Serial.println(time);
-  Serial.print("latitude: ");
-  Serial.println(latitude, 6);
-  Serial.print("longitude: ");
-  Serial.println(longitude, 6);
+  root.printTo(Serial);
+  Serial.println();
+  root.prettyPrintTo(Serial);
 }
 
 void loop() {}
