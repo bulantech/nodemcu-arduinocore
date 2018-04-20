@@ -11,28 +11,33 @@ void setup() {
     // put your setup code here, to run once:
     Serial.begin(115200);
     pinMode(SW_PIN, INPUT_PULLUP);  
+
+    //start-block2
+    IPAddress _ip = IPAddress(10, 0, 1, 78);
+    IPAddress _gw = IPAddress(10, 0, 1, 1);
+    IPAddress _sn = IPAddress(255, 255, 255, 0);
     
     //WiFiManager
     //Local intialization. Once its business is done, there is no need to keep it around
     WiFiManager wifiManager;
 
-    Serial.println("Reset wifi config?:");
+    Serial.println();
+    Serial.print("Reset wifi config?:");
     for(int i=5; i>0; i--){
       Serial.print(String(i)+" "); 
       delay(1000);
     }
-    
-    //reset saved settings
+        
     if(digitalRead(SW_PIN) == LOW) // Press button
     {
       Serial.println();
       Serial.println("Reset wifi config");
+      //reset saved settings
       wifiManager.resetSettings(); 
+      //set custom ip for portal
+      wifiManager.setAPStaticIPConfig(_ip, _gw, _sn);
     }    
     
-    //set custom ip for portal
-    //wifiManager.setAPStaticIPConfig(IPAddress(10,0,1,1), IPAddress(10,0,1,1), IPAddress(255,255,255,0));
-
     //fetches ssid and pass from eeprom and tries to connect
     //if it does not connect it starts an access point with the specified name
     //here  "AutoConnectAP"
