@@ -1,57 +1,33 @@
-#include <ESP8266WiFi.h>          //https://github.com/esp8266/Arduino
+#include <ESP8266WiFi.h>
 
-//needed for library
-#include <DNSServer.h>
-#include <ESP8266WebServer.h>
-#include <WiFiManager.h>         //https://github.com/tzapu/WiFiManager
+#define SSID_NAME "true_home2G_350"
+#define SSID_PASS "88f02350"
 
-#define SW_PIN 0
+IPAddress staticIP(192,168,1,2);
+IPAddress gateway(192,168,1,1);
+IPAddress subnet(255,255,255,0);
 
-void setup() {
-    // put your setup code here, to run once:
-    Serial.begin(115200);
-    pinMode(SW_PIN, INPUT_PULLUP);  
+void setup()
+{
+  Serial.begin(115200);
+  Serial.println();
+  Serial.println();
 
-    //start-block2
-    IPAddress _ip = IPAddress(10, 0, 1, 78);
-    IPAddress _gw = IPAddress(10, 0, 1, 1);
-    IPAddress _sn = IPAddress(255, 255, 255, 0);
-    
-    //WiFiManager
-    //Local intialization. Once its business is done, there is no need to keep it around
-    WiFiManager wifiManager;
+  WiFi.begin(SSID_NAME, SSID_PASS);
+  WiFi.config(staticIP, gateway, subnet);
 
-    Serial.println();
-    Serial.print("Reset wifi config?:");
-    for(int i=5; i>0; i--){
-      Serial.print(String(i)+" "); 
-      delay(1000);
-    }
-        
-    if(digitalRead(SW_PIN) == LOW) // Press button
-    {
-      Serial.println();
-      Serial.println("Reset wifi config");
-      //reset saved settings
-      wifiManager.resetSettings(); 
-      //set custom ip for portal
-      wifiManager.setAPStaticIPConfig(_ip, _gw, _sn);
-    }    
-    
-    //fetches ssid and pass from eeprom and tries to connect
-    //if it does not connect it starts an access point with the specified name
-    //here  "AutoConnectAP"
-    //and goes into a blocking loop awaiting configuration
-    wifiManager.autoConnect("AutoConnectAP");
-    //or use this for auto generated name ESP + ChipID
-    //wifiManager.autoConnect();
+  Serial.print("Connecting");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println();
 
-    
-    //if you get here you have connected to the WiFi
-    Serial.println("connected...yeey :)");
+  Serial.print("Connected, IP address: ");
+  Serial.println(WiFi.localIP());
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
-    
+  delay(1000);  
 }
