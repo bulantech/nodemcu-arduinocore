@@ -11,8 +11,33 @@ ESP8266WebServer server(80);
 
 const int led = D0;
 
+String homePage = " \
+<!DOCTYPE html> \
+<head> \
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>    \
+</head> \
+<body> \
+  <button >LED ON</button> \
+  <script>  \
+    $( document ).ready(function() { \
+      $( 'button' ).click(function() {  \        
+        if($( 'button' ).text() == 'LED ON') {  \
+          $.post( '/on', function( data ) {  \
+            $( 'button' ).text(data);  \
+          });  \                  
+        } else {  \          
+          $.post( '/off', function( data ) {  \
+            $( 'button' ).text(data); \
+          });  \     
+        }  \      
+      });  \    
+    });  \   
+  </script>  \
+</body> \
+<html> \
+";
+
 void handleRoot() {
-  String homePage = "<h2><a href='/on' class='btn btn-default'>LED ON</a></h2>";
   server.send(200, "text/html", homePage);
 }
 
@@ -65,13 +90,15 @@ void setup(void) {
   server.on("/on", []() {
     digitalWrite(led, 0);
     String homePage = "<h2><a href='/off' class='btn btn-default'>LED OFF</a></h2>";
-    server.send(200, "text/html", homePage);
+    if(server.method() == HTTP_GET) server.send(200, "text/html", homePage);
+    else server.send(200, "text/plain", "LED OFF");
   });
 
   server.on("/off", []() {
     digitalWrite(led, 1);
     String homePage = "<h2><a href='/on' class='btn btn-default'>LED ON</a></h2>";
-    server.send(200, "text/html", homePage);
+    if(server.method() == HTTP_GET) server.send(200, "text/html", homePage);
+    else server.send(200, "text/plain", "LED ON");
   });
 
   server.onNotFound(handleNotFound);

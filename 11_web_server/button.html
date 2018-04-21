@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>   
+</head>
+<body>
+  <button >LED ON</button>   
+  <script>     
+    $( document ).ready(function() {       
+      $( 'button' ).click(function() {         
+        if($( 'button' ).text() == 'LED ON') { 
+          $.post( "/on", function( data ) {
+            $( 'button' ).text(data);
+          });                   
+        } else {           
+          $.post( "/off", function( data ) {
+            $( 'button' ).text(data);
+          });      
+        }       
+      });     
+    });   
+  </script> 
+</body>
+<html>
