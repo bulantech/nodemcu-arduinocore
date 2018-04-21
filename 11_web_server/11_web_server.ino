@@ -4,21 +4,21 @@
 #include <ESP8266WebServer.h>
 //#include <ESP8266mDNS.h>
 
-#define SSID_NAME "**********"
-#define SSID_PASS "**********"
+#define SSID_NAME "******"
+#define SSID_PASS "******"
 
 ESP8266WebServer server(80);
 
 const int led = D0;
 
 void handleRoot() {
-  digitalWrite(led, 1);
+//  digitalWrite(led, 1);
   server.send(200, "text/plain", "hello from esp8266!");
-  digitalWrite(led, 0);
+//  digitalWrite(led, 0);
 }
 
 void handleNotFound() {
-  digitalWrite(led, 1);
+//  digitalWrite(led, 1);
   String message = "File Not Found\n\n";
   message += "URI: ";
   message += server.uri();
@@ -31,12 +31,12 @@ void handleNotFound() {
     message += " " + server.argName(i) + ": " + server.arg(i) + "\n";
   }
   server.send(404, "text/plain", message);
-  digitalWrite(led, 0);
+//  digitalWrite(led, 0);
 }
 
 void setup(void) {
   pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
+//  digitalWrite(led, 0);
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   WiFi.begin(SSID_NAME, SSID_PASS);
@@ -63,10 +63,22 @@ void setup(void) {
     server.send(200, "text/plain", "this works as well");
   });
 
+  server.on("/on", []() {
+    digitalWrite(led, 0);
+    server.send(200, "text/plain", "LED ON");
+  });
+
+  server.on("/off", []() {
+    digitalWrite(led, 1);
+    server.send(200, "text/plain", "LED OFF");
+  });
+
   server.onNotFound(handleNotFound);
 
   server.begin();
   Serial.println("HTTP server started");
+
+  digitalWrite(led, 1);
 }
 
 void loop(void) {
