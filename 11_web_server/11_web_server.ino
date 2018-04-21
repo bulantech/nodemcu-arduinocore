@@ -12,9 +12,8 @@ ESP8266WebServer server(80);
 const int led = D0;
 
 void handleRoot() {
-//  digitalWrite(led, 1);
-  server.send(200, "text/plain", "hello from esp8266!");
-//  digitalWrite(led, 0);
+  String homePage = "<h2><a href='/on' class='btn btn-default'>LED ON</a></h2>";
+  server.send(200, "text/html", homePage);
 }
 
 void handleNotFound() {
@@ -65,12 +64,14 @@ void setup(void) {
 
   server.on("/on", []() {
     digitalWrite(led, 0);
-    server.send(200, "text/plain", "LED ON");
+    String homePage = "<h2><a href='/off' class='btn btn-default'>LED OFF</a></h2>";
+    server.send(200, "text/html", homePage);
   });
 
   server.on("/off", []() {
     digitalWrite(led, 1);
-    server.send(200, "text/plain", "LED OFF");
+    String homePage = "<h2><a href='/on' class='btn btn-default'>LED ON</a></h2>";
+    server.send(200, "text/html", homePage);
   });
 
   server.onNotFound(handleNotFound);
