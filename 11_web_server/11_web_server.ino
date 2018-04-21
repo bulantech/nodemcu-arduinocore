@@ -3,39 +3,53 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 //#include <ESP8266mDNS.h>
+#include <ArduinoJson.h>
 
-#define SSID_NAME "******"
-#define SSID_PASS "******"
+#define SSID_NAME "PP-RD-FL4"
+#define SSID_PASS "ppetech1"
 
 ESP8266WebServer server(80);
 
 const int led = D0;
 
 String homePage = " \
-<!DOCTYPE html> \
-<head> \
-  <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>    \
-</head> \
-<body> \
-  <button >LED ON</button> \
-  <script>  \
-    $( document ).ready(function() { \
-      $( 'button' ).click(function() {  \        
-        if($( 'button' ).text() == 'LED ON') {  \
-          $.post( '/on', function( data ) {  \
-            $( 'button' ).text(data);  \
-          });  \                  
-        } else {  \          
-          $.post( '/off', function( data ) {  \
-            $( 'button' ).text(data); \
-          });  \     
-        }  \      
-      });  \    
-    });  \   
-  </script>  \
-</body> \
-<html> \
-";
+<!DOCTYPE html>\ 
+  <head>\ 
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>   \ 
+ </head>\ 
+ <body>\ 
+   <button id='btLed'>LED ON</button> \ 
+   <br>\ 
+   <br>\ 
+   <div>\ 
+     <input type='text' id='lname'>\ 
+     <br>\ 
+     <button id='btSave'>SAVE</button>  \ 
+   </div>   \ 
+   <script>     \ 
+     $( document ).ready(function() {       \ 
+       $( '#btLed' ).click(function() {         \ 
+         if($( '#btLed' ).text() == 'LED ON') { \ 
+           $.post( '/on', function( data ) {\ 
+             $( '#btLed' ).text(data);\ 
+           });                   \ 
+         } else {           \ 
+           $.post( '/off', function( data ) {\ 
+             $( '#btLed' ).text(data);\ 
+           });      \ 
+         }       \ 
+       });  \ 
+       $( '#btSave' ).click(function() {  \ 
+         let inputData = $( '#lname' ).val();  \ 
+         $.post( '/config/set', {msg: inputData} , function( data ) {\ 
+           console.log('data => ' + data);\ 
+         });                   \ 
+       }); \ 
+     });   \ 
+   </script>    \ 
+ </body>\ 
+ <html>\ 
+ ";
 
 void handleRoot() {
   server.send(200, "text/html", homePage);
@@ -99,6 +113,26 @@ void setup(void) {
     String homePage = "<h2><a href='/on' class='btn btn-default'>LED ON</a></h2>";
     if(server.method() == HTTP_GET) server.send(200, "text/html", homePage);
     else server.send(200, "text/plain", "LED ON");
+  });
+
+  server.on("/config/set", HTTP_POST, [](){
+    Serial.println("server.args => " + server.args());
+    String body = "{";   
+    for (int i = 0; i < server.args(); i++) {    
+      body += "\"" + server.argName(i) + "\" : ";     //Get the name of the parameter
+      body += "\"" + server.arg(i) + "\",";             //Get the value of the parameter  
+    } 
+    body.remove( body.length()-1 );
+    body += "} \0";
+    
+    Serial.println(body);
+    Serial.println();
+    
+    StaticJsonBuffer<200> newBuffer;
+    JsonObject& newjson = newBuffer.parseObject(body);
+    newjson.printTo(Serial); 
+       
+    server.send ( 200, "text/plain", "{success:true}" );
   });
 
   server.onNotFound(handleNotFound);

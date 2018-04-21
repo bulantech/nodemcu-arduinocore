@@ -3,21 +3,37 @@
   <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>   
 </head>
 <body>
-  <button >LED ON</button>   
+  <button id='btLed'>LED ON</button> 
+  <br>
+  <br>
+  <div>
+    <input type='text' id='lname'>
+    <br>
+    <button id='btSave'>SAVE</button>  
+  </div>   
   <script>     
     $( document ).ready(function() {       
-      $( 'button' ).click(function() {         
-        if($( 'button' ).text() == 'LED ON') { 
-          $.post( "/on", function( data ) {
-            $( 'button' ).text(data);
+      $( '#btLed' ).click(function() {         
+        if($( '#btLed' ).text() == 'LED ON') { 
+          $.post( '/on', function( data ) {
+            $( '#btLed' ).text(data);
           });                   
         } else {           
-          $.post( "/off", function( data ) {
-            $( 'button' ).text(data);
+          $.post( '/off', function( data ) {
+            $( '#btLed' ).text(data);
           });      
         }       
-      });     
+      });  
+
+      $( '#btSave' ).click(function() {  
+        let inputData = $( '#lname' ).val();  
+        $.post( '/config/set', {msg: inputData} , function( data ) {
+          console.log('data => ' + data);
+        });                   
+      }); 
+
     });   
-  </script> 
+  </script>    
+
 </body>
 <html>
