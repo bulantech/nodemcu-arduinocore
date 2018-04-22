@@ -5,8 +5,12 @@
 //#include <ESP8266mDNS.h>
 #include <ArduinoJson.h>
 
-#define SSID_NAME "PP-RD-FL4"
-#define SSID_PASS "ppetech1"
+#define SSID_NAME "ESP-webserver"
+#define SSID_PASS "12345678"
+
+IPAddress local_IP(192,168,4,22);
+IPAddress gateway(192,168,4,9);
+IPAddress subnet(255,255,255,0);
 
 ESP8266WebServer server(80);
 
@@ -76,20 +80,29 @@ void setup(void) {
   pinMode(led, OUTPUT);
 //  digitalWrite(led, 0);
   Serial.begin(115200);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(SSID_NAME, SSID_PASS);
-  Serial.println("");
 
-  // Wait for connection
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  Serial.println("");
-  Serial.print("Connected to ");
-  Serial.println(SSID_NAME);
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  // access point 
+  WiFi.softAPConfig(local_IP, gateway, subnet);
+  WiFi.softAP(SSID_NAME);
+  Serial.println();
+  Serial.print("Soft-AP IP address = ");
+  Serial.println(WiFi.softAPIP());
+
+   // staion mode
+//  WiFi.mode(WIFI_STA);
+//  WiFi.begin(SSID_NAME, SSID_PASS);
+//  Serial.println("");
+//
+//  // Wait for connection
+//  while (WiFi.status() != WL_CONNECTED) {
+//    delay(500);
+//    Serial.print(".");
+//  }
+//  Serial.println("");
+//  Serial.print("Connected to ");
+//  Serial.println(SSID_NAME);
+//  Serial.print("IP address: ");
+//  Serial.println(WiFi.localIP());
 
 //  if (MDNS.begin("esp8266")) {
 //    Serial.println("MDNS responder started");
