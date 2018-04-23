@@ -40,7 +40,7 @@ void loop() {
   Serial.print("[HTTP] begin...\n");
   // configure traged server and url
   //http.begin("https://192.168.1.12/test.html", "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
-  http.begin("http://10.1.3.121:3000/posts/1"); //HTTP
+  http.begin("http://jsonplaceholder.typicode.com/posts/1"); //HTTP
 
   Serial.print("[HTTP] GET...\n");
   // start connection and send HTTP header
