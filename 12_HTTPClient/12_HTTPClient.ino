@@ -1,7 +1,8 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 
-const char* ssid     = "******";
-const char* password = "******";
+const char* ssid     = "********";
+const char* password = "********";
 
 void setup() {
   Serial.begin(115200);
@@ -34,50 +35,32 @@ void setup() {
 int value = 0;
 
 void loop() {
-  const char* host = "10.1.3.121";
-  
-  Serial.print("connecting to ");
-  Serial.println(host);
+  HTTPClient http;
 
-  // Use WiFiClient class to create TCP connections
-  WiFiClient client;
-  const int httpPort = 3000;
-  if (!client.connect(host, httpPort)) {
-    Serial.println("connection failed");
-    return;
-  }
+  Serial.print("[HTTP] begin...\n");
+  // configure traged server and url
+  //http.begin("https://192.168.1.12/test.html", "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
+  http.begin("http://10.1.3.121:3000/posts/1"); //HTTP
 
-  // We now create a URI for the request
-  String url = "/posts/";  
+  Serial.print("[HTTP] GET...\n");
+  // start connection and send HTTP header
+  int httpCode = http.GET();
 
-  Serial.print("Requesting URL: ");
-  Serial.println(url);
+  // httpCode will be negative on error
+  if (httpCode > 0) {
+    // HTTP header has been send and Server response header has been handled
+    Serial.printf("[HTTP] GET... code: %d\n", httpCode);
 
-  // This will send the request to the server
-  client.print(String("GET ") + url + " HTTP/1.1\r\n" +
-               "Host: " + host + "\r\n" +
-               "Connection: close\r\n\r\n");
-  unsigned long timeout = millis();
-  while (client.available() == 0) {
-    if (millis() - timeout > 5000) {
-      Serial.println(">>> Client Timeout !");
-      client.stop();
-      return;
+    // file found at server
+    if (httpCode == HTTP_CODE_OK) {
+      String payload = http.getString();
+      Serial.println(payload);
     }
+  } else {
+    Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
   }
 
-  // Read all the lines of the reply from server and print them to Serial
-  Serial.println();
-  while (client.available()) {
-    String line = client.readStringUntil('\r');
-    Serial.print(line);
-  }
-
-  Serial.println();
-  Serial.print(client.readString());
-  
-  Serial.println();
-  Serial.println("closing connection");
+  http.end();
 
   delay(30000);
   
