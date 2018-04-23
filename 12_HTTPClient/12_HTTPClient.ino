@@ -39,8 +39,9 @@ void loop() {
 
   Serial.print("[HTTP] begin...\n");
   // configure traged server and url
-  //http.begin("https://192.168.1.12/test.html", "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
-  http.begin("http://jsonplaceholder.typicode.com/posts/1"); //HTTP
+  // https not work!
+  http.begin("https://jsonplaceholder.typicode.com/posts/1", "‎‎fe 7b b2 86 c7 60 ca ed 74 3b 9d 1d 22 e9 3e a8 d3 6c 10 bd"); //HTTPS
+  //http.begin("http://jsonplaceholder.typicode.com/posts/1"); //HTTP
 
   Serial.print("[HTTP] GET...\n");
   // start connection and send HTTP header
