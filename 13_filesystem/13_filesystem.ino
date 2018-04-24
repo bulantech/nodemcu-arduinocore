@@ -2,8 +2,8 @@
 #include <FS.h>
 #include <ArduinoJson.h>
 
-const char* ssid     = "******";
-const char* password = "******";
+char ssid[32];
+char password[32];
 
 #define SW D3
 
@@ -36,11 +36,11 @@ void setup() {
   Serial.println();
   Serial.println();
   Serial.print("Connecting to ");
-  Serial.println(String(ssid)+" ,"+ password);
+  Serial.printf("%s, %s", ssid ,password);
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-
+  WiFi.begin((const char*)ssid, (const char*)password);
+  Serial.println();
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
@@ -95,9 +95,6 @@ bool resetConfig() {
     return false;
   }
 
-  ssid = json["ap_name"];
-  password = json["ap_pass"];
-  
   Serial.println("config.json data:");
   json.printTo(Serial);
   configFile.close();
@@ -152,10 +149,10 @@ bool loadConfig() {
   }
   String ap_name = json["ap_name"];
   String ap_pass = json["ap_pass"];
-  ssid = ap_name.c_str();
-  password = ap_pass.c_str();
+  ap_name.toCharArray(ssid, ap_name.length()+1);
+  ap_pass.toCharArray(password, ap_pass.length()+1);
   
-  Serial.println("config.json data:");
+  Serial.printf("config.json data: %s, %s \r\n", ssid, password);
   json.printTo(Serial);
   configFile.close();
   Serial.println(); 
@@ -166,48 +163,18 @@ bool loadConfig() {
 bool updateConfig() {
   Serial.println();
   Serial.println("Update config..");
-  configFile = SPIFFS.open("/config.json", "r");
-  if (!configFile) {
-    Serial.println("Failed to open config file");
-    return false;
-  }
-
-  size_t size = configFile.size();
-  if (size > 1024) {
-    Serial.println("Config file size is too large");
-    return false;
-  }
-
-  // Allocate a buffer to store contents of the file.
-  std::unique_ptr<char[]> buf(new char[size]);
-
-  // We don't use String here because ArduinoJson library requires the input
-  // buffer to be mutable. If you don't use ArduinoJson, you may as well
-  // use configFile.readString instead.
-  configFile.readBytes(buf.get(), size);
-
-  StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& json = jsonBuffer.parseObject(buf.get());
-
-  if (!json.success()) {
-    Serial.println("Failed to parse config file");
-    return false;
-  }
-
-  ssid = json["ap_name"];
-  password = json["ap_pass"];
   
-  Serial.println("config.json data:");
-  json.printTo(Serial);
-  configFile.close();
-
   configFile = SPIFFS.open("/config.json", "w");
   if (!configFile) {
     Serial.println("Failed to open config file");
     return false;
   }
-  json["ap_name"] = "new name";
-  json["ap_pass"] = "new password";
+
+  StaticJsonBuffer<200> jsonBuffer;
+  JsonObject& json = jsonBuffer.createObject();
+
+  json["ap_name"] = "new_name";
+  json["ap_pass"] = "new_password";
 
   String newData;
   Serial.println();
