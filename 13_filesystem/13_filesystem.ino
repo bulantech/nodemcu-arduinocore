@@ -78,6 +78,24 @@ bool loadConfig() {
   
   Serial.println("config.json data:");
   json.printTo(Serial);
+  configFile.close();
+
+  configFile = SPIFFS.open("/config.json", "w");
+  if (!configFile) {
+    Serial.println("Failed to open config file");
+    return false;
+  }
+  json["ap_name"] = "new name";
+  json["ap_pass"] = "new password";
+
+  String newData;
+  Serial.println();
+  json.printTo(newData);
+  Serial.println("newData ==========");
+  Serial.println(newData);
+  json.printTo(configFile);
+//  configFile.print(newData); 
+  configFile.close();
   
   return true;
 }
