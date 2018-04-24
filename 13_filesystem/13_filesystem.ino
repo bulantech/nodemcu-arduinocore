@@ -95,6 +95,11 @@ bool resetConfig() {
     return false;
   }
 
+  String ap_name = json["ap_name"];
+  String ap_pass = json["ap_pass"];
+  ap_name.toCharArray(ssid, ap_name.length()+1);
+  ap_pass.toCharArray(password, ap_pass.length()+1);
+  
   Serial.println("config.json data:");
   json.printTo(Serial);
   configFile.close();
