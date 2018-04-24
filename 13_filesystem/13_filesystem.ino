@@ -1,8 +1,9 @@
 #include <ESP8266WiFi.h>
 #include <FS.h>
+#include <ArduinoJson.h>
 
-const char* ssid     = "PP-RD-FL4";
-const char* password = "ppetech1";
+const char* ssid     = "";
+const char* password = "";
 
 void setup() {
   Serial.begin(115200);
@@ -62,8 +63,21 @@ bool loadConfig() {
   // use configFile.readString instead.
   configFile.readBytes(buf.get(), size);
 
+  configFile.readBytes(buf.get(), size);
+
+  StaticJsonBuffer<200> jsonBuffer;
+  JsonObject& json = jsonBuffer.parseObject(buf.get());
+
+  if (!json.success()) {
+    Serial.println("Failed to parse config file");
+    return false;
+  }
+
+  ssid = json["ap_name"];
+  password = json["ap_pass"];
+  
   Serial.println("config.json data:");
-  Serial.println(buf.get());
+  json.printTo(Serial);
   
   return true;
 }
